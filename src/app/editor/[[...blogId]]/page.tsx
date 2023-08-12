@@ -18,15 +18,20 @@ export default async function Editor({ searchParams } : {
   if(!allowedToPost) throw new UserNotAllowedToPostError('You are not allowed to create blog posts');
 
   let blogId = searchParams['blogId']?.at(0);
-  let blog = undefined;
+  let blog;
+  
   if(!blogId) {
     blogId = generateUID('draft');
   } else {
-    blog = await db.query.blogs.findFirst({ where: eq(blogs.id, blogId)})
-    if(blog?.ownerId !== user.id) throw new UserNotOwnerError('You are not the owner of this post')
+    blog = await db.query.blogs.findFirst({ where: eq(blogs.id, blogId) });
+    if(blog?.ownerId !== user.id) throw new UserNotOwnerError('You are not the owner of this blog post');
   }
 
-
+  const [
+    categories,
+  ] = await Promise.all([
+    db.query.categories.findMany({ with: { blogsAndCategories: { where: eq(blogs.id, blogId )} } })
+  ]);
 
   return (
     <>Hello world</>
