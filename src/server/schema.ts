@@ -2,6 +2,7 @@ import { boolean, date, pgTable, serial, text, varchar } from 'drizzle-orm/pg-co
 
 export const blogs = pgTable('blog', {
   id: varchar('id', { length: 8 }).primaryKey(),
+  ownerId: text('owner_id').notNull(),
   title: text('title').notNull(),
   description: text('description').notNull(),
   content: text('content').default(''),

@@ -1,5 +1,5 @@
 export default function generateUID(idType: 
-  ('blog' | 'category' | 'image' | 'comment' | 'tag' | 'user'),
+  ('blog' | 'category' | 'image' | 'comment' | 'tag' | 'user' | 'draft'),
   length=6
 ) {
 
@@ -25,6 +25,9 @@ export default function generateUID(idType:
     case 'comment':
       prefix = 'cm_';
       break;
+    case 'draft':
+      prefix = 'd_'
+      break
     case 'image':
       prefix = 'im_'
       break;
