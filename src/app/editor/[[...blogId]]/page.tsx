@@ -8,7 +8,7 @@ import { eq } from 'drizzle-orm';
 import { blogs } from "~/server/schema";
 import { UserNotOwnerError } from "~/lib/errors/userNotOwnerError";
 
-export default async function Editor({ searchParams } : {
+export default async function EditorPage({ searchParams } : {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
   const user = await currentUser();
