@@ -1,9 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit';
+
 import categoriesSlice from './reducers/categoriesSlice';
+import editorSlice from './reducers/editorSlice';
+import tagsSlice from './reducers/tagsSlice';
 
 export const store = configureStore({
   reducer: {
     categoriesReducer: categoriesSlice,
+    editorReducer: editorSlice,
+    tagsReducer: tagsSlice
   }
 });
 
