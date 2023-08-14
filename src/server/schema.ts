@@ -17,6 +17,7 @@ export const blogs = pgTable('blog', {
 
 export const blogRelations = relations(blogs, ({ one, many }) => ({
   blogsAndCategories: many(blogsAndCategories),
+  tags: many(tags)
 }))
 
 /* --------------------------------------------------- Categories --------------------------------------------------- */
@@ -47,5 +48,20 @@ export const blogsAndCategoriesRelations = relations(blogsAndCategories, ({ one 
   categories: one(categories, {
     fields: [blogsAndCategories.categoryId],
     references: [categories.id]
+  })
+}));
+
+/* ------------------------------------------------------ Tags ------------------------------------------------------ */
+
+export const tags = pgTable('tags', {
+  id: text('id').primaryKey(),
+  tag: text('tag').notNull(),
+  blogId: text('blog_id').references(() => blogs.id)
+});
+
+export const tagsRelation = relations(tags, ({ one }) => ({
+  blog: one(blogs, {
+    fields: [tags.blogId],
+    references: [blogs.id]
   })
 }));

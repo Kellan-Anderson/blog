@@ -1,14 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { editorType } from "~/types";
 
-type editorStateType = {
-  title: string,
-  titleError?: string,
-  content: string,
-  contentError?: string,
-  description: string
-}
-
-const initialState: editorStateType = {
+const initialState: editorType = {
   title: '',
   content: '',
   description: '',
@@ -18,8 +11,9 @@ export const editorSlice = createSlice({
   name: 'editor',
   initialState,
   reducers: {
-    setEditorDetails: (state, action: PayloadAction<editorStateType>) => {
-      return action.payload
+    setEditorDetails: (state, action: PayloadAction<editorType>) => {
+      console.log('Setting details: ', action.payload);
+      state = action.payload
     },
 
     setContent: (state, action: PayloadAction<string>) => {
@@ -31,6 +25,7 @@ export const editorSlice = createSlice({
     },
 
     setTitle: (state, action: PayloadAction<string>) => {
+      console.log('Updating title: ', action.payload)
       state.title = action.payload;
     },
 
@@ -40,7 +35,7 @@ export const editorSlice = createSlice({
 
     setDescription: (state, action: PayloadAction<string>) => {
       if(action.payload === '') {
-        state.description = state.content.substring(0, 100);
+        state.description = state.content?.substring(0, 100);
       } else {
         state.description = action.payload;
       }

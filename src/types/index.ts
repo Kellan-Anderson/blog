@@ -5,6 +5,8 @@ export type categoryType = {
 
 export type editorType = {
   content: string,
+  contentError?: string,
   title: string,
-  description: string
+  titleError?: string,
+  description: string,
 }

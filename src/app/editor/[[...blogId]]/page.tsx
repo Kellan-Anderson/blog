@@ -1,39 +1,80 @@
+// Auth imports
 import { currentUser } from "@clerk/nextjs";
+
+// Custom Errors
 import { UserNotAllowedToPostError } from "~/lib/errors/userNotAllowedError";
 import { UserNotSignedInError } from "~/lib/errors/userNotSignedInError";
+import { UserNotOwnerError } from "~/lib/errors/userNotOwnerError";
+
+// Helper functions
 import checkAllowedUsers from "~/lib/helpers/checkAllowedUsers";
 import generateUID from "~/lib/helpers/generateUID";
+
+// DB imports
 import { db } from "~/server/db";
 import { eq } from 'drizzle-orm';
-import { blogs } from "~/server/schema";
-import { UserNotOwnerError } from "~/lib/errors/userNotOwnerError";
+import { blogs, tags } from "~/server/schema";
+
+// Client component imports
+import Editor from "./(editorComponents)/editor";
+import DetailsAccordion from "./(editorComponents)/detailsAccordian";
 
 export default async function EditorPage({ searchParams } : {
   searchParams: { [key: string]: string | string[] | undefined }
 }) {
+  // Get the current user
   const user = await currentUser();
   if(!user) throw new UserNotSignedInError('You are not signed in');
 
+  // Check to see if the user is allowed to post
   const allowedToPost = checkAllowedUsers(user);
   if(!allowedToPost) throw new UserNotAllowedToPostError('You are not allowed to create blog posts');
 
-  let blogId = searchParams['blogId']?.at(0);
-  let blog;
+  // Get the blog post id from the search params
+  let blogId = searchParams['blogId']?.at(0) ?? generateUID('draft');
   
-  if(!blogId) {
-    blogId = generateUID('draft');
-  } else {
-    blog = await db.query.blogs.findFirst({ where: eq(blogs.id, blogId) });
-    if(blog?.ownerId !== user.id) throw new UserNotOwnerError('You are not the owner of this blog post');
-  }
+  // Load the blog data from the DB 
+  const blogPost = await db.query.blogs.findFirst({
+    where: eq(blogs.id, blogId),
+    with: {
+      tags: {
+        where: eq(blogs.id, tags.id)
+      }
+    }
+  });
+
+  //if(blogPost && blogPost.ownerId !== user.id) throw new UserNotOwnerError('You are not the owner of this blog');
 
   const [
-    categories,
+    blogCategories
   ] = await Promise.all([
-    db.query.categories.findMany({ with: { blogsAndCategories: { where: eq(blogs.id, blogId )} } })
+    // Query for categories
+    db.query.categories.findMany({
+      with: {
+        blogsAndCategories: {
+          columns: { blogId: true }
+        }
+      }
+    }),
+
+    // TODO write query for images
   ]);
 
+  // Map categories to the category type
+  const mappedCategories = blogCategories.map(cat => ({
+    name: cat.categoryName,
+    checked: cat.blogsAndCategories.at(0)?.blogId === blogId
+  }));
+
+  // Get final values from the db call
+  const content = blogPost?.content ?? '';
+  const title = blogPost?.title ?? '';
+  const description = blogPost?.description ?? '';
+  const blogTags = blogPost?.tags.map(t => t.tag);
+
   return (
-    <>Hello world</>
+    <>
+      <Editor preloadedBlog={{ content, title, description }}/>
+    </>
   );
 }

@@ -22,7 +22,7 @@ export default function Editor({ preloadedBlog } : { preloadedBlog: editorType }
 
   useEffect(() => {
     dispatch(setEditorDetails(preloadedBlog))
-  });
+  }, []);
 
   return (
     <div>
@@ -37,11 +37,11 @@ export default function Editor({ preloadedBlog } : { preloadedBlog: editorType }
             <TabsTrigger value="preview">Preview</TabsTrigger>
           </TabsList>
           <TabsContent value="editor">
-            <Textarea onChange={(e) => dispatch(setContent(e.target.value))}/>
+            <Textarea onChange={(e) => dispatch(setContent(e.target.value))} value={content}/>
           </TabsContent>
           <TabsContent value="preview">
             <ReactMarkdown className="markdown">
-              {content}
+              {content === '' ? '# Enter some text to see it appear here' : content}
             </ReactMarkdown>
           </TabsContent>
         </Tabs>
