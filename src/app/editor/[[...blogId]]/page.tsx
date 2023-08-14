@@ -17,7 +17,7 @@ import { blogs, tags } from "~/server/schema";
 
 // Client component imports
 import Editor from "./(editorComponents)/editor";
-import DetailsAccordion from "./(editorComponents)/detailsAccordian";
+import DetailsAccordion from "./(editorComponents)/detailsAccordion";
 
 export default async function EditorPage({ searchParams } : {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -73,8 +73,13 @@ export default async function EditorPage({ searchParams } : {
   const blogTags = blogPost?.tags.map(t => t.tag);
 
   return (
-    <>
-      <Editor preloadedBlog={{ content, title, description }}/>
-    </>
+    <div className="grid grid-cols-3">
+      <div className="w-full h-screen p-3 col-span-2">
+        <Editor preloadedBlog={{ content, title, description }}/>
+      </div>
+      <div className="h-screen pr-2">
+        <DetailsAccordion categories={mappedCategories}/>
+      </div>
+    </div>
   );
 }

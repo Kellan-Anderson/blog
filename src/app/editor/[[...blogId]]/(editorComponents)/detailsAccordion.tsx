@@ -5,12 +5,11 @@ import Tags from "./tags";
 
 type detailsProps = {
   categories: categoryType[],
-  tags: string[]
 }
-
-export default function DetailsAccordion({ categories, tags } : detailsProps) {
+ 
+export default function DetailsAccordion({ categories } : detailsProps) {
   return (
-    <Accordion type="multiple">
+    <Accordion type="single" defaultValue="publisher" collapsible>
       {/* Publisher */}
       <AccordionItem value="publisher">
         <AccordionTrigger>Publish</AccordionTrigger>
@@ -19,16 +18,21 @@ export default function DetailsAccordion({ categories, tags } : detailsProps) {
 
       {/* Categories */}
       <AccordionItem value="categories">
+        <AccordionTrigger>Categories</AccordionTrigger>
         <AccordionContent>
           <Categories preloadedCategories={categories} />
         </AccordionContent>
       </AccordionItem>
+
+      {/*
 
       <AccordionItem value="Tags">
         <AccordionContent>
           <Tags />
         </AccordionContent>
       </AccordionItem>
+
+    */}
 
     </Accordion>
   );
