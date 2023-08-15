@@ -14,8 +14,9 @@ export const tagsSlice = createSlice({
       state.splice(state.indexOf(action.payload), 1);
     },
 
-    setAllTags: (state, action: PayloadAction<string[]>) => {
-      state = action.payload;
+    setAllTags: (state, action: PayloadAction<string[] | undefined>) => {
+      if(!action.payload) return 'This is a test'.split(' ');  //[]
+      return action.payload;
     },
 
     clearAllTags: (state) => []

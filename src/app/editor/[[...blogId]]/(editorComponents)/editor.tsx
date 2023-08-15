@@ -26,7 +26,7 @@ export default function Editor({ preloadedBlog } : { preloadedBlog: editorType }
   }, []);
 
   return (
-    <Card className="p-1 h-full w-full flex flex-col">
+    <Card className="p-1 h-full flex flex-col">
       <CardTitle className="p-3">Editor</CardTitle>
       <CardContent className="grow">
         <div className="flex flex-col gap-2 h-full">

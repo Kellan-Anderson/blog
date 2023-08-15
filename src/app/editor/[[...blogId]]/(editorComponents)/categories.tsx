@@ -47,16 +47,18 @@ export default function Categories({ preloadedCategories } : { preloadedCategori
         <Button type="submit">Add</Button>
       </form>
       {errorMessage && <p className="text-red-700 font-semibold">{errorMessage}</p>}
-      {categories.map((category, index) => (
-        <div key={category.name}>
-          <Checkbox
-            defaultChecked={category.checked}
-            onChange={() => onCategoryChangeHandler(category.name)}
-            id={`category${index}`}
-          />
-          <Label htmlFor={`category${index}`} />
-        </div>
-      ))}
+      <div className="pt-3 pl-2">
+        {categories.map((category, index) => (
+          <div key={category.name} className="flex items-center pb-1 last:pb-0">
+            <Checkbox
+              defaultChecked={category.checked}
+              onChange={() => onCategoryChangeHandler(category.name)}
+              id={`category${index}`}
+            />
+            <Label htmlFor={`category${index}`} className="pl-1">{category.name}</Label>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

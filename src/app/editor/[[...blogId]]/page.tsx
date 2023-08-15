@@ -78,7 +78,7 @@ export default async function EditorPage({ searchParams } : {
         <Editor preloadedBlog={{ content, title, description }}/>
       </div>
       <div className="h-screen pr-2">
-        <DetailsAccordion categories={mappedCategories}/>
+        <DetailsAccordion categories={mappedCategories} tags={blogTags}/>
       </div>
     </div>
   );
