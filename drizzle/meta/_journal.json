@@ -29,6 +29,13 @@
       "when": 1692028046350,
       "tag": "0003_married_onslaught",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1692198978216,
+      "tag": "0004_secret_sabretooth",
+      "breakpoints": true
     }
   ]
 }

@@ -3,13 +3,15 @@ import { IncomingHttpHeaders } from "http";
 import { headers } from 'next/headers';
 import { NextResponse } from "next/server";
 import { Webhook, WebhookRequiredHeaders } from "svix";
+import { db } from "~/server/db";
+import { users } from "~/server/schema";
 
 const webhookSecret = process.env.WEBHOOK_SECRET || '';
 
 type EventType = 'user.created' | 'user.updated' | '*'
 
 type Event = {
-  data: Record<string, string | number>,
+  data: Record<string, string | null>,
   object: 'event',
   type: EventType
 }
@@ -36,16 +38,32 @@ async function handler(request: Request) {
 
   const eventType: EventType = event.type;
   if(eventType === 'user.created' || eventType === 'user.updated') {
-    const { id, ...attributes } = event.data;
-    console.log({
+    const {
       id,
-      attributes,
-      message: `Received event type: ${eventType}`
+      first_name,
+      last_name,
+      image_url
+    } = event.data;
+
+    console.log('Received from event: ', {
+      id,
+      name: `${first_name}${last_name ? ' ' + last_name : ''}`,
+      profilePictureUrl: image_url
+    })
+    
+    await db.insert(users).values({
+      id: id ?? '',
+      name: `${first_name}${last_name ? ' ' + last_name : ''}`,
+      profilePictureUrl: image_url
     });
-  } else console.log({
-    message: 'Got type: *',
-    data: event.data
-  });
+
+    return NextResponse.json({
+      message: `Event: ${eventType}`
+    }, { status: 200 });
+  }
+  return NextResponse.json({
+    message: `Event: ${eventType}`
+  }, { status: 200 });
 }
 
 export const GET = handler;

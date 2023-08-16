@@ -1,6 +1,15 @@
 import { relations } from 'drizzle-orm';
 import { boolean, date, pgTable, primaryKey, serial, text, varchar } from 'drizzle-orm/pg-core'
 
+
+/* ----------------------------------------------------- Users ------------------------------------------------------ */
+export const users = pgTable('users', {
+  id: text('id').primaryKey(),
+  bio: varchar('bio', { length: 256 }),
+  name: text('name'),
+  profilePictureUrl: text('profile_picture_url')
+});
+
 /* ----------------------------------------------------- blogs ------------------------------------------------------ */
 
 export const blogs = pgTable('blog', {
