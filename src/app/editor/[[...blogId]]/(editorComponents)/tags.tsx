@@ -6,7 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import Tag from "~/components/ui/tag";
 import { useAppDispatch, useAppSelector } from "~/redux/hooks";
-import { addTag, setAllTags } from "~/redux/reducers/tagsSlice";
+import { addTag, removeTag, setAllTags } from "~/redux/reducers/tagsSlice";
 
 export default function Tags({ preloadedTags } : { preloadedTags: string[] | undefined }) {
   const dispatch = useAppDispatch();
@@ -21,9 +21,10 @@ export default function Tags({ preloadedTags } : { preloadedTags: string[] | und
   type tagsFormType = {
     tag: string
   }
-  const { handleSubmit, register } = useForm<tagsFormType>();
+  const { handleSubmit, register, reset } = useForm<tagsFormType>();
   const onTagSubmit: SubmitHandler<tagsFormType> = (values) => {
     setErrorMessage(undefined);
+    reset();
     dispatch(addTag(values.tag));
   }
   const onTagSubmitError: SubmitErrorHandler<tagsFormType> = (values) => {
@@ -32,17 +33,24 @@ export default function Tags({ preloadedTags } : { preloadedTags: string[] | und
 
   return (
     <>
-      <form className="pb-2 flex flex-row gap-1" onSubmit={handleSubmit(onTagSubmit, onTagSubmitError)}>
+      <form className="pb-2 pl-px pt-px flex flex-row gap-1" onSubmit={handleSubmit(onTagSubmit, onTagSubmitError)}>
         <Input 
-          placeholder="Tag" 
+          placeholder="Tag"
           {...register('tag', {
             required: 'Please enter a tag'
           })}
         />
         <Button type="submit">Add</Button>
       </form>
+      {errorMessage && <p className="text-xs text-red-700 pb-2">{errorMessage}</p>}
       <div className="flex flex-row flex-wrap">
-        {tags.map((tag) => <Tag key={tag} text={tag} onClick={(text) => console.log('I got: ', text)} onDelete={(text) => console.log('deleting: ', text)}/>)}
+        {tags.map((tag) => (
+          <Tag
+            key={tag} 
+            text={tag}
+            onDelete={(t) => dispatch(removeTag(t))}
+          />
+        ))}
       </div>
     </>
   );

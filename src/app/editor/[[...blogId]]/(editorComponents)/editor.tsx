@@ -5,6 +5,7 @@ import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { ScrollArea } from "~/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "~/components/ui/tabs";
 import { Textarea } from "~/components/ui/textarea";
 import { useAppDispatch, useAppSelector } from "~/redux/hooks";
@@ -57,9 +58,11 @@ export default function Editor({ preloadedBlog } : { preloadedBlog: editorType }
               />
             </TabsContent>
             <TabsContent value="preview" className="h-full">
-              <ReactMarkdown className="markdown h-full overflow-scroll">
-                {content === '' ? '# Enter some text to see it appear here' : content}
-              </ReactMarkdown>
+              <ScrollArea className="m-px">
+                <ReactMarkdown className="markdown h-full">
+                  {content === '' ? '# Enter some text to see it appear here' : content}
+                </ReactMarkdown>
+              </ScrollArea>
             </TabsContent>
           </Tabs>
         </div>

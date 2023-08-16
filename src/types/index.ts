@@ -10,3 +10,7 @@ export type editorType = {
   titleError?: string,
   description: string,
 }
+
+export type imagesType = {
+  
+}

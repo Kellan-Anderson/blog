@@ -65,3 +65,10 @@ export const tagsRelation = relations(tags, ({ one }) => ({
     references: [blogs.id]
   })
 }));
+
+/* ----------------------------------------------------- Images ----------------------------------------------------- */
+/*
+export const images = pgTable('images', {
+
+})
+*/

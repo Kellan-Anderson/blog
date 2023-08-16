@@ -3,8 +3,8 @@ import { HiOutlineX } from 'react-icons/hi'
 type tagProps = {
   text: string,
   className?: string,
-  onClick? : (arg0?: string) => void,
-  onDelete? : (arg0?: string) => void
+  onClick? : (arg0: string) => void,
+  onDelete? : (arg0: string) => void
 }
 
 export default function Tag(props: tagProps) {

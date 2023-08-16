@@ -12,7 +12,6 @@ export const editorSlice = createSlice({
   initialState,
   reducers: {
     setEditorDetails: (state, action: PayloadAction<editorType>) => {
-      console.log('Setting details: ', action.payload);
       state = action.payload
     },
 
