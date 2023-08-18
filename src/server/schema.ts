@@ -10,11 +10,15 @@ export const users = pgTable('users', {
   profilePictureUrl: text('profile_picture_url')
 });
 
+export const usersRelations = relations(users, ({ many }) => ({
+  blogs: many(blogs),
+}))
+
 /* ----------------------------------------------------- blogs ------------------------------------------------------ */
 
 export const blogs = pgTable('blog', {
   id: varchar('id', { length: 8 }).primaryKey(),
-  ownerId: text('owner_id').notNull(),
+  ownerId: text('owner_id').notNull().references(() => users.id),
   title: text('title').notNull(),
   description: text('description').notNull(),
   content: text('content').default(''),
@@ -25,8 +29,10 @@ export const blogs = pgTable('blog', {
 });
 
 export const blogRelations = relations(blogs, ({ one, many }) => ({
+  owner: one(users),
   blogsAndCategories: many(blogsAndCategories),
-  tags: many(tags)
+  tags: many(tags),
+  imagesAndBlogs: many(blogsAndImages)
 }))
 
 /* --------------------------------------------------- Categories --------------------------------------------------- */
@@ -76,8 +82,35 @@ export const tagsRelation = relations(tags, ({ one }) => ({
 }));
 
 /* ----------------------------------------------------- Images ----------------------------------------------------- */
-/*
-export const images = pgTable('images', {
 
-})
-*/
+export const images = pgTable('images', {
+  id: text('id').primaryKey(),
+  imageName: varchar('image_name', { length: 48 }),
+  imageUrl: text('image_url').notNull(),
+  ownedBy: text('owned_by').references(() => users.id),
+  createdAt: date('create_at').defaultNow()
+});
+
+export const imagesRelations = relations(images, ({ one, many }) => ({
+  owner: one(users),
+  blogs: many(blogsAndImages)
+}));
+
+export const blogsAndImages = pgTable('blogs_and_images', {
+    blogId: text('blog_id').notNull().references(() => blogs.id),
+    imageId: text('image_id').notNull().references(() => images.id),
+  }, (t) => ({
+    pk: primaryKey(t.blogId, t.imageId)
+  })
+);
+
+export const blogsAndImagesRelations = relations(blogsAndImages, ({ one }) => ({
+  blog: one(blogs, {
+    fields: [blogsAndImages.blogId],
+    references: [blogs.id]
+  }),
+  images: one(images, {
+    fields: [blogsAndImages.imageId],
+    references: [images.id]
+  })
+}));

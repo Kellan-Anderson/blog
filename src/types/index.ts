@@ -12,5 +12,7 @@ export type editorType = {
 }
 
 export type imagesType = {
-  
+  name: string | null,
+  url: string,
+  id: string
 }

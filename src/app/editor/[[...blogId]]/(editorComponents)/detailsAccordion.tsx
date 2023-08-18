@@ -1,14 +1,16 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "~/components/ui/accordion";
 import Categories from "./categories";
-import { categoryType } from "~/types";
+import { categoryType, imagesType } from "~/types";
 import Tags from "./tags";
+import Images from "./images";
 
 type detailsProps = {
   categories: categoryType[],
-  tags: string[] | undefined
+  images: imagesType[],
+  tags: string[] | undefined,
 }
  
-export default function DetailsAccordion({ categories, tags } : detailsProps) {
+export default function DetailsAccordion({ categories, tags, images } : detailsProps) {
   return (
     <Accordion type="single" defaultValue="publisher" collapsible>
       {/* Publisher */}
@@ -25,10 +27,19 @@ export default function DetailsAccordion({ categories, tags } : detailsProps) {
         </AccordionContent>
       </AccordionItem>
 
+      {/* Tags */}
       <AccordionItem value="Tags">
-      <AccordionTrigger>Tags</AccordionTrigger>
+        <AccordionTrigger>Tags</AccordionTrigger>
         <AccordionContent>
           <Tags preloadedTags={tags}/>
+        </AccordionContent>
+      </AccordionItem>
+      
+      {/* Images */}
+      <AccordionItem value="images">
+        <AccordionTrigger>Images</AccordionTrigger>
+        <AccordionContent>
+          <Images preloadedImages={images} />
         </AccordionContent>
       </AccordionItem>
 

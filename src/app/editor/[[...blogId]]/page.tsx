@@ -13,11 +13,12 @@ import generateUID from "~/lib/helpers/generateUID";
 // DB imports
 import { db } from "~/server/db";
 import { eq } from 'drizzle-orm';
-import { blogs, tags } from "~/server/schema";
+import { blogs, blogsAndCategories, blogsAndImages, images, tags } from "~/server/schema";
 
 // Client component imports
 import Editor from "./(editorComponents)/editor";
 import DetailsAccordion from "./(editorComponents)/detailsAccordion";
+import { imagesType } from "~/types";
 
 export default async function EditorPage({ searchParams } : {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -32,6 +33,8 @@ export default async function EditorPage({ searchParams } : {
 
   // Get the blog post id from the search params
   let blogId = searchParams['blogId']?.at(0) ?? generateUID('draft');
+
+  blogId = 'd_blog1'
   
   // Load the blog data from the DB 
   const blogPost = await db.query.blogs.findFirst({
@@ -39,32 +42,43 @@ export default async function EditorPage({ searchParams } : {
     with: {
       tags: {
         where: eq(blogs.id, tags.id)
-      }
+      },
+      
     }
   });
-
   //if(blogPost && blogPost.ownerId !== user.id) throw new UserNotOwnerError('You are not the owner of this blog');
 
   const [
-    blogCategories
+    blogCategories,
+    blogImages
   ] = await Promise.all([
     // Query for categories
     db.query.categories.findMany({
       with: {
         blogsAndCategories: {
-          columns: { blogId: true }
+          where: eq(blogsAndCategories.blogId, blogId)
         }
       }
     }),
 
-    // TODO write query for images
+    // Query for images
+    db.query.blogsAndImages.findMany({
+      where: eq(blogsAndImages.blogId, blogId),
+      with: { images: true }
+    }),
   ]);
 
   // Map categories to the category type
   const mappedCategories = blogCategories.map(cat => ({
     name: cat.categoryName,
-    checked: cat.blogsAndCategories.at(0)?.blogId === blogId
+    checked: cat.blogsAndCategories.length !== 0
   }));
+
+  // Map images to images type
+  const mappedImages = blogImages.map((i) => {
+    const image = i.images;
+    return {name: image.imageName, id: image.id, url: image.imageUrl}
+  })
 
   // Get final values from the db call
   const content = blogPost?.content ?? '';
@@ -78,7 +92,7 @@ export default async function EditorPage({ searchParams } : {
         <Editor preloadedBlog={{ content, title, description }}/>
       </div>
       <div className="h-screen pr-2">
-        <DetailsAccordion categories={mappedCategories} tags={blogTags}/>
+        <DetailsAccordion categories={mappedCategories} tags={blogTags} images={mappedImages}/>
       </div>
     </div>
   );

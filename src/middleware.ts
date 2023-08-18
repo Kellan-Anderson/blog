@@ -7,7 +7,8 @@ export default authMiddleware({
   publicRoutes: [
     '/',
     '/editor',
-    '/api/users'
+    '/api/users',
+    '/api/images'
   ]
 });
 
