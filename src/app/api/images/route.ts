@@ -5,11 +5,11 @@ import { db, supabase } from "~/server/db";
 import { blogsAndImages, images } from "~/server/schema";
 
 export async function POST(request: NextRequest) {
-  // Get the user object for the user that is making the request
-  const user = await currentUser();
-
-  // Setup the formdata object to get data from
-  const data = await request.formData();
+  // Get the user and the formdata objects
+  const [data, user] = await Promise.all([
+    request.formData(),
+    currentUser()
+  ])
 
   // Validate the file is attached
   const file: File | null = data.get('file') as unknown as File;
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   if(!filename) filename = file.name;
 
   // Get the user ID from the request => validates the same person who uploaded the image is the one requesting the API
-  const requestUserId = data.get('uid');
+  const requestUserId = data.get('userId');
   if(!user || user.id !== requestUserId?.toString()) 
     return NextResponse.json({ message: 'User not authorized' }, { status: 401 });
 
@@ -36,18 +36,21 @@ export async function POST(request: NextRequest) {
 
     const blogId = data.get('blogId')?.toString();
     const imageId = generateUID('image')
-    await db.insert(images).values({
+    const imagesPromise = db.insert(images).values({
       id: imageId,
       imageUrl: publicUrlData.publicUrl,
       imageName: filename,
       ownedBy: user.id
     });
+    let blogsAndImagesPromise;
     if(blogId) {
-      await db.insert(blogsAndImages).values({
+      blogsAndImagesPromise = db.insert(blogsAndImages).values({
         blogId,
         imageId
       });
     }
+
+    await Promise.all([ imagesPromise, blogsAndImagesPromise ])
 
     // Return success message
     return NextResponse.json({

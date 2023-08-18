@@ -18,6 +18,8 @@ import { LuLoader2 } from 'react-icons/lu'
 import Tag from "~/components/ui/tag";
 import { z } from "zod";
 import { useToast } from "~/components/ui/use-toast";
+import usePromise from "~/hooks/usePromise";
+import { uploadImage } from "~/server/api/routers/images";
 
 export default function Images({ preloadedImages } : { preloadedImages: imagesType[] }) {
   const blogImages = useAppSelector(state => state.imagesReducer);
@@ -32,7 +34,6 @@ export default function Images({ preloadedImages } : { preloadedImages: imagesTy
   const [file, setFile] = useState<File>();
   const [filename, setFilename] = useState('');
   const [errorMessages, setErrorMessages] = useState<string[]>([]);
-  const [uploadLoading, setUploadLoading] = useState(false);
   const [imageDialogOpen, setImageDialogOpen] = useState(false);
 
   const imageUploadResponseObject = z.object({
@@ -42,41 +43,24 @@ export default function Images({ preloadedImages } : { preloadedImages: imagesTy
     id: z.string()
   });
 
-  const uploadImage = async () => {
-    setUploadLoading(true)
-    const data = new FormData();
-
-    if(!file) throw new Error('No file attached');
-    if(!userId) throw new Error('User not signed in, please try again');
-
-    data.set('file', file);
-    data.set('filename', filename);
-    data.set('uid', userId);
-    data.set('blogId', 'd_blog1') // todo change to state that you get from redux publisher slice
-
-    const result = await fetch('/api/images', {
-      method: "post",
-      body: data
-    });
-
-    try {
-      if(result.ok) {
-        const resultObj = await result.json();
-        const {id, name, url} = imageUploadResponseObject.parse(resultObj);
-        dispatch(addImage({id, name, url}));
-        toast({title: 'Success', description: 'Your image was uploaded'})
-      } else throw Error('Upload failed');
+  const { isLoading, callFn } = usePromise({
+    promiseFn: () => uploadImage({ file, userId: userId ?? '', filename }),
+    onSuccess: (data) => {
+      const imageObj = imageUploadResponseObject.parse(data);
+      dispatch(addImage(imageObj));
       setImageDialogOpen(false);
-    } catch(e) {
-      console.log(e);
+      toast({title: 'Success', description: 'Your image was uploaded'});
+    },
+    onError: (err) => {
+      console.log(err)
       toast({
         title: 'Upload Failed',
         description: 'There as an issue uploading your image, please try again', 
         variant: 'destructive'
       });
     }
-    setUploadLoading(false);
-  }
+  });
+
 
   // Runs the image through a verification step. If the image does not meet the specifications in validateImage() then
   // set an error message, otherwise set the file
@@ -152,7 +136,7 @@ export default function Images({ preloadedImages } : { preloadedImages: imagesTy
             {file && (
               <form className="w-full px-4 pt-3 flex flex-row items-center gap-1" onSubmit={(e) => {
                 e.preventDefault();
-                uploadImage();
+                callFn();
               }}>
                 <div className="w-full flex flex-row items-center gap-2">
                   <Label className="text-md">Name: </Label>
@@ -163,7 +147,7 @@ export default function Images({ preloadedImages } : { preloadedImages: imagesTy
                     className=""
                   />
                   <Button type="submit" className="whitespace-nowrap w-40" >
-                    {uploadLoading ? (
+                    {isLoading ? (
                       <LuLoader2 className="animate-spin"/>
                     ) : (
                       'Add image'
