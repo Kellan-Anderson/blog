@@ -97,8 +97,8 @@ export const imagesRelations = relations(images, ({ one, many }) => ({
 }));
 
 export const blogsAndImages = pgTable('blogs_and_images', {
-    blogId: text('blog_id').notNull().references(() => blogs.id),
-    imageId: text('image_id').notNull().references(() => images.id),
+    blogId: text('blog_id').notNull().references(() => blogs.id, { onDelete: 'cascade' }),
+    imageId: text('image_id').notNull().references(() => images.id, { onDelete: 'cascade' }),
   }, (t) => ({
     pk: primaryKey(t.blogId, t.imageId)
   })

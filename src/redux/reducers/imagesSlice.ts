@@ -13,12 +13,12 @@ const imagesSlice = createSlice({
       if(state.indexOf(action.payload) === -1) state.push(action.payload)
     },
 
-    removeImage: (state, action: PayloadAction<string>) => {
+    deleteImage: (state, action: PayloadAction<string>) => {
       const rmIndex = state.findIndex(i => i.id === action.payload);
       if(rmIndex !== -1) state.splice(rmIndex, 1);
     }
   }
 });
 
-export const { addImage, removeImage, setInitialImages } = imagesSlice.actions;
+export const { addImage, deleteImage, setInitialImages } = imagesSlice.actions;
 export default imagesSlice.reducer;

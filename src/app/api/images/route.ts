@@ -1,8 +1,10 @@
 import { currentUser } from "@clerk/nextjs";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import generateUID from "~/lib/helpers/generateUID";
 import { db, supabase } from "~/server/db";
-import { blogsAndImages, images } from "~/server/schema";
+import { blogs, blogsAndImages, images } from "~/server/schema";
 
 export async function POST(request: NextRequest) {
   // Get the user and the formdata objects
@@ -62,5 +64,33 @@ export async function POST(request: NextRequest) {
   } catch (e) {
     console.log('Error uploading image: ', e);
     return NextResponse.json({ message: 'error' }, { status: 500 })
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    // Parse the request body so we have a typed object
+    const deleteRequestObject = z.object({
+      imageId: z.string(),
+    });
+    const body = deleteRequestObject.parse(request.body);
+
+    const user = await currentUser();
+    if(!user) return new NextResponse('User not authenticated', { status: 401 });
+
+    await db.delete(images).where(and(eq(images.ownedBy, user.id), eq(images.id, body.imageId)));
+
+    return NextResponse.json({
+      message: `Deleted image ${body.imageId}`
+    }, {
+      status: 200
+    })
+  } catch(e) {
+    return NextResponse.json({
+      message: 'There was an error processing your response',
+      errorMessage: e
+    }, {
+      status: 500
+    });
   }
 }
