@@ -1,7 +1,14 @@
+'use client'
+
 import { useEffect, useRef, useState } from "react"
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
-import { useAppSelector } from "~/redux/hooks";
+import { Label } from "~/components/ui/label";
+import { Switch } from "~/components/ui/switch";
+import usePromise from "~/hooks/usePromise";
+import { useAppDispatch, useAppSelector } from "~/redux/hooks";
+import { setId } from "~/redux/reducers/publisherSlice";
+import { saveFn } from "~/server/api/routers/blogRouter";
 
 export default function Publisher({ blogId } : { blogId : string }) {
   const hasChanged = useRef<boolean>(false);
@@ -12,10 +19,18 @@ export default function Publisher({ blogId } : { blogId : string }) {
   const [autosave, setAutosave] = useState<boolean>(prefix === 'd' || prefix === 'b');
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
 
-  const editorValues = useAppSelector(state => state.editorReducer);
-  const categoriesValues = useAppSelector(state => state.categoriesReducer);
-  const tagsValues = useAppSelector(state => state.tagsReducer);
+  const editor = useAppSelector(state => state.editorReducer);
+  const categories = useAppSelector(state => state.categoriesReducer);
+  const tags = useAppSelector(state => state.tagsReducer);
+  const images = useAppSelector(state => state.imagesReducer);
 
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setId(blogId))
+  }, []);
+
+  /*
   useEffect(() => {
     if(autosave) {
       autosaveInterval.current = setInterval(save, 2000);
@@ -23,17 +38,24 @@ export default function Publisher({ blogId } : { blogId : string }) {
       clearInterval(autosaveInterval.current);
     }
   }, [autosave]);
+  */
 
   
   useEffect(() => {
     hasChanged.current = true
-  }, [editorValues, categoriesValues, tagsValues]);
+  }, [editor, categories, tags, images]);
+
+  const { callFn } = usePromise({
+    promiseFn: () => saveFn({ categories, editor, images, tags, blogId }),
+    onSuccess: (data) => console.log('Success: ', data),
+    onError: (err) => console.log('Error: ', err)
+  });
   
   const save = async () => {
     // call api/blog/save
     if(hasChanged.current) {
       hasChanged.current = false
-      // Call api
+      callFn();
     }
   }
 
@@ -55,24 +77,9 @@ export default function Publisher({ blogId } : { blogId : string }) {
 
   return (
     <>
-      <div className="flex flex-col">
-        <Button onClick={handlePublishClick}>Publish</Button>
-        <div>
-          <Button variant="secondary" onClick={handlePreviewClick}>Preview</Button>
-          <Button variant="secondary" onClick={save}>Save</Button>
-        </div>
-        <Button variant="destructive" onClick={handleDiscardClick}>Discard</Button>
-      </div>
-      <AlertDialog open={alertDialogOpen} onOpenChange={setAlertDialogOpen}>
-        <AlertDialogHeader>Are you sure?</AlertDialogHeader>
-        <AlertDialogContent>
-          Deleting this blog means that you will loose all your work forever, there is no way to recover it
-        </AlertDialogContent>
-        <AlertDialogFooter>
-          <Button variant='secondary' onClick={() => setAlertDialogOpen(false)}>Cancel</Button>
-          <Button variant='destructive' onClick={() => onBlogDelete()}>Delete</Button>
-        </AlertDialogFooter>
-      </AlertDialog>
+      <Button
+        onClick={() => save()}
+      >save</Button>
     </>
   )
 }

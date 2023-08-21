@@ -3,20 +3,24 @@ import Categories from "./categories";
 import { categoryType, imagesType } from "~/types";
 import Tags from "./tags";
 import Images from "./images";
+import Publisher from "./publisher";
 
 type detailsProps = {
   categories: categoryType[],
   images: imagesType[],
   tags: string[] | undefined,
+  blogId: string
 }
  
-export default function DetailsAccordion({ categories, tags, images } : detailsProps) {
+export default function DetailsAccordion({ categories, tags, images, blogId } : detailsProps) {
   return (
     <Accordion type="single" defaultValue="publisher" collapsible>
       {/* Publisher */}
       <AccordionItem value="publisher">
         <AccordionTrigger>Publish</AccordionTrigger>
-        <AccordionContent>Nothing here yet 🤪</AccordionContent>
+        <AccordionContent>
+          <Publisher blogId={blogId}/>
+        </AccordionContent>
       </AccordionItem>
 
       {/* Categories */}

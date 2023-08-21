@@ -1,6 +1,7 @@
 export type categoryType = {
   name: string,
-  checked: boolean
+  checked: boolean,
+  id: string
 }
 
 export type editorType = {

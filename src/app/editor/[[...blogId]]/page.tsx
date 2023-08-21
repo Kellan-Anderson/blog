@@ -34,6 +34,7 @@ export default async function EditorPage({ searchParams } : {
   // Get the blog post id from the search params
   let blogId = searchParams['blogId']?.at(0) ?? generateUID('draft');
 
+  // todo change the way that blogId is generated
   blogId = 'd_blog1'
   
   // Load the blog data from the DB 
@@ -71,7 +72,8 @@ export default async function EditorPage({ searchParams } : {
   // Map categories to the category type
   const mappedCategories = blogCategories.map(cat => ({
     name: cat.categoryName,
-    checked: cat.blogsAndCategories.length !== 0
+    checked: cat.blogsAndCategories.length !== 0,
+    id: cat.id
   }));
 
   // Map images to images type
@@ -92,7 +94,7 @@ export default async function EditorPage({ searchParams } : {
         <Editor preloadedBlog={{ content, title, description }}/>
       </div>
       <div className="h-screen pr-2">
-        <DetailsAccordion categories={mappedCategories} tags={blogTags} images={mappedImages}/>
+        <DetailsAccordion categories={mappedCategories} tags={blogTags} images={mappedImages} blogId={blogId} />
       </div>
     </div>
   );

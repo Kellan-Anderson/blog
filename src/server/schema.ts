@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { boolean, date, pgTable, primaryKey, serial, text, varchar } from 'drizzle-orm/pg-core'
+import generateUID from '~/lib/helpers/generateUID';
 
 
 /* ----------------------------------------------------- Users ------------------------------------------------------ */

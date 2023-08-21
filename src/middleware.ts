@@ -8,7 +8,8 @@ export default authMiddleware({
     '/',
     '/editor',
     '/api/users',
-    '/api/images'
+    '/api/images',
+    '/api/blog'
   ]
 });
 

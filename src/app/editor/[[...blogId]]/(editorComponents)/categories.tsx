@@ -6,6 +6,7 @@ import { Button } from "~/components/ui/button";
 import { Checkbox } from "~/components/ui/checkbox";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import generateUID from "~/lib/helpers/generateUID";
 import { useAppDispatch, useAppSelector } from "~/redux/hooks"
 import { addCategory, changeCategory, setAllCategories } from '~/redux/reducers/categoriesSlice'
 import { categoryType } from "~/types";
@@ -28,7 +29,8 @@ export default function Categories({ preloadedCategories } : { preloadedCategori
   const onCategorySubmit: SubmitHandler<categoryFormType> = (values) => {
     dispatch(addCategory({
       name: values.category,
-      checked: true
+      checked: true,
+      id: generateUID('category')
     }));
   }
 
