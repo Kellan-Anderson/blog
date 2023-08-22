@@ -22,11 +22,7 @@ import usePromise from "~/hooks/usePromise";
 import { uploadImage } from "~/server/api/routers/imagesRouter";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle } from "~/components/ui/alert-dialog";
 
-export default function Images({ preloadedImages } : { preloadedImages: imagesType[] }) {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(setInitialImages(preloadedImages))  
-  }, []);
+export default function Images() {
 
   return (
     <>

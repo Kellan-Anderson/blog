@@ -11,11 +11,14 @@ export const categoriesSlice = createSlice({
       return action.payload
     },
     addCategory: (state, action: PayloadAction<categoryType>) => {
-      if(!state.find(cat => cat.name === action.payload.name)) state.push(action.payload);
+      if(!state.find(cat => cat.name === action.payload.name)) return state.concat(action.payload);
     },
     changeCategory: (state, action: PayloadAction<string>) => {
       const index = state.findIndex(cat => cat.name === action.payload);
-      if(index !== -1) state[index].checked = !state[index].checked;
+      if(index !== -1) {
+        state[index].checked = !state[index].checked;
+        return state
+      }
       else console.log('This code should not be running');
     }
   }

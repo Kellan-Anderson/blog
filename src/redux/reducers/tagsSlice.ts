@@ -7,11 +7,11 @@ export const tagsSlice = createSlice({
   initialState,
   reducers: {
     addTag: (state, action: PayloadAction<string>) => {
-      if(state.findIndex(t => t === action.payload) === -1) state.push(action.payload);
+      if(state.findIndex(t => t === action.payload) === -1) return state.concat(action.payload);
     },
 
     removeTag: (state, action: PayloadAction<string>) => {
-      state.splice(state.indexOf(action.payload), 1);
+      return state.filter(i => i !== action.payload);
     },
 
     setAllTags: (state, action: PayloadAction<string[] | undefined>) => {

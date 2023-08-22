@@ -8,16 +8,11 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import generateUID from "~/lib/helpers/generateUID";
 import { useAppDispatch, useAppSelector } from "~/redux/hooks"
-import { addCategory, changeCategory, setAllCategories } from '~/redux/reducers/categoriesSlice'
-import { categoryType } from "~/types";
+import { addCategory, changeCategory } from '~/redux/reducers/categoriesSlice'
 
-export default function Categories({ preloadedCategories } : { preloadedCategories: categoryType[]} ) {
+export default function Categories() {
   const categories = useAppSelector(state => state.categoriesReducer);
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(setAllCategories(preloadedCategories));
-  });
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 

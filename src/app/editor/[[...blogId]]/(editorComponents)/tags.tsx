@@ -8,13 +8,9 @@ import Tag from "~/components/ui/tag";
 import { useAppDispatch, useAppSelector } from "~/redux/hooks";
 import { addTag, removeTag, setAllTags } from "~/redux/reducers/tagsSlice";
 
-export default function Tags({ preloadedTags } : { preloadedTags: string[] | undefined }) {
+export default function Tags() {
   const dispatch = useAppDispatch();
   const tags = useAppSelector(state => state.tagsReducer);
-  
-  useEffect(() => {
-    dispatch(setAllTags(preloadedTags));
-  }, []);
 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
 

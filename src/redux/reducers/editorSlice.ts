@@ -11,37 +11,55 @@ export const editorSlice = createSlice({
   name: 'editor',
   initialState,
   reducers: {
-    setEditorDetails: (state, action: PayloadAction<editorType>) => {
-      state = action.payload
-    },
+    setEditorDetails: (state, action: PayloadAction<editorType>) => action.payload,
 
     setContent: (state, action: PayloadAction<string>) => {
-      state.content = action.payload
+      return {
+        ...state,
+        content: action.payload
+      }
     },
 
     setContentError: (state, action: PayloadAction<string | undefined>) => {
-      state.contentError = action.payload
+      return {
+        ...state,
+        contentError: action.payload
+      }
     },
 
     setTitle: (state, action: PayloadAction<string>) => {
-      console.log('Updating title: ', action.payload)
-      state.title = action.payload;
+      return {
+        ...state,
+        title: action.payload
+      }
     },
 
     setTitleError: (state, action: PayloadAction<string | undefined>) => {
-      state.titleError = action.payload
+      return {
+        ...state,
+        titleError: action.payload
+      }
     },
 
     setDescription: (state, action: PayloadAction<string>) => {
+      let description: string;
       if(action.payload === '') {
-        state.description = state.content?.substring(0, 100);
+        description = state.content?.substring(0, 100);
       } else {
-        state.description = action.payload;
+        description = action.payload;
+      }
+      return {
+        ...state,
+        description
       }
     },
 
     clearErrors: (state) => {
-      state.titleError, state.contentError = undefined
+      return {
+        ...state,
+        titleError: undefined,
+        contentError: undefined
+      }
     }
   }
 });

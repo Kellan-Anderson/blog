@@ -10,12 +10,12 @@ const imagesSlice = createSlice({
     setInitialImages: (state, action: PayloadAction<imagesType[]>) => action.payload,
 
     addImage: (state, action: PayloadAction<imagesType>) => {
-      if(state.indexOf(action.payload) === -1) state.push(action.payload)
+      if(state.indexOf(action.payload) === -1) return state.concat(action.payload)
     },
 
     deleteImage: (state, action: PayloadAction<string>) => {
-      const rmIndex = state.findIndex(i => i.id === action.payload);
-      if(rmIndex !== -1) state.splice(rmIndex, 1);
+      const updatedItems = state.filter(i => i.id !== action.payload);
+      return updatedItems;
     }
   }
 });

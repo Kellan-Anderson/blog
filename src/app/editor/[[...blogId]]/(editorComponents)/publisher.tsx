@@ -30,7 +30,6 @@ export default function Publisher({ blogId } : { blogId : string }) {
     dispatch(setId(blogId))
   }, []);
 
-  /*
   useEffect(() => {
     if(autosave) {
       autosaveInterval.current = setInterval(save, 2000);
@@ -38,14 +37,13 @@ export default function Publisher({ blogId } : { blogId : string }) {
       clearInterval(autosaveInterval.current);
     }
   }, [autosave]);
-  */
-
   
   useEffect(() => {
+    console.log('detected change')
     hasChanged.current = true
   }, [editor, categories, tags, images]);
 
-  const { callFn } = usePromise({
+  const { callFn, isLoading: isSaving } = usePromise({
     promiseFn: () => saveFn({ categories, editor, images, tags, blogId }),
     onSuccess: (data) => console.log('Success: ', data),
     onError: (err) => console.log('Error: ', err)
@@ -53,7 +51,9 @@ export default function Publisher({ blogId } : { blogId : string }) {
   
   const save = async () => {
     // call api/blog/save
-    if(hasChanged.current) {
+    console.log('Checking for save')
+    if(hasChanged.current && !isSaving) {
+      console.log('saving')
       hasChanged.current = false
       callFn();
     }
@@ -79,7 +79,10 @@ export default function Publisher({ blogId } : { blogId : string }) {
     <>
       <Button
         onClick={() => save()}
-      >save</Button>
+      >
+        save
+      </Button>
+      <Switch checked={autosave} onCheckedChange={setAutosave}/>
     </>
   )
 }
