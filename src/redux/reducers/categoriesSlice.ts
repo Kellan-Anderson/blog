@@ -14,12 +14,13 @@ export const categoriesSlice = createSlice({
       if(!state.find(cat => cat.name === action.payload.name)) return state.concat(action.payload);
     },
     changeCategory: (state, action: PayloadAction<string>) => {
-      const index = state.findIndex(cat => cat.name === action.payload);
-      if(index !== -1) {
-        state[index].checked = !state[index].checked;
-        return state
-      }
-      else console.log('This code should not be running');
+      return state.map(cat => {
+        if(cat.name === action.payload) {
+          return {...cat, checked: !cat.checked}
+        } else {
+          return cat
+        }
+      })
     }
   }
 });

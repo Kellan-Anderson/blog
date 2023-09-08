@@ -17,3 +17,8 @@ export type imagesType = {
   url: string,
   id: string
 }
+
+export type publishType = {
+  id: string,
+  autosave: boolean
+}

@@ -7,8 +7,6 @@ import { blogs, blogsAndCategories, blogsAndImages, tags } from "~/server/schema
 
 export async function PUT(request: NextRequest) {
   try {
-    console.log('Recieved:', request.body)
-
     const bodyParser = z.object({
       categoryIds: z.string().array(),
       imageIds: z.string().array(),
@@ -20,6 +18,8 @@ export async function PUT(request: NextRequest) {
     });
     const body = bodyParser.parse(await request.json());
     const blogId = body.blogId;
+
+    console.log('Received: ', body);
 
     // Await all deletions
     await Promise.all([
@@ -33,21 +33,24 @@ export async function PUT(request: NextRequest) {
 
     // Re-upload categories
     const uploadCategories = body.categoryIds.map(categoryId => ({ blogId, categoryId }));
-    if(uploadCategories.length) uploadPromises.push(
-      db.insert(blogsAndCategories).values(uploadCategories)
-    );
+    if(uploadCategories.length) {
+      const categoriesPromise = db.insert(blogsAndCategories).values(uploadCategories)
+      uploadPromises.push(categoriesPromise);
+    }
 
     // Re-upload images
     const uploadImages = body.imageIds.map(imageId => ({ blogId, imageId }));
-    if(uploadImages.length) uploadPromises.push(
-      db.insert(blogsAndImages).values(uploadImages)
-    );
+    if(uploadImages.length) {
+      const imagesPromise = db.insert(blogsAndImages).values(uploadImages)
+      uploadPromises.push(imagesPromise);
+    }
 
     // Re-upload tags
     const uploadTags = body.tags.map(tag => ({ tag, blogId, id: generateUID('tag') }));
-    if(uploadTags.length) uploadPromises.push(
-      db.insert(tags).values(uploadTags)
-    );
+    if(uploadTags.length) {
+      const tagsPromise = db.insert(tags).values(uploadTags)
+      uploadPromises.push(tagsPromise);
+    }
 
     // Re-write blog details
     await Promise.all([

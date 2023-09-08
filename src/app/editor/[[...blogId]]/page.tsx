@@ -18,7 +18,6 @@ import { blogs, blogsAndCategories, blogsAndImages, images, tags } from "~/serve
 // Client component imports
 import Editor from "./(editorComponents)/editor";
 import DetailsAccordion from "./(editorComponents)/detailsAccordion";
-import { imagesType } from "~/types";
 
 export default async function EditorPage({ searchParams } : {
   searchParams: { [key: string]: string | string[] | undefined }
@@ -68,6 +67,8 @@ export default async function EditorPage({ searchParams } : {
       with: { images: true }
     }),
   ]);
+
+  console.log(blogCategories);
 
   // Map categories to the category type
   const mappedCategories = blogCategories.map(cat => ({

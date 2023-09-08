@@ -11,6 +11,7 @@ import { useAppDispatch } from "~/redux/hooks";
 import { setInitialImages } from "~/redux/reducers/imagesSlice";
 import { setAllTags } from "~/redux/reducers/tagsSlice";
 import { setAllCategories } from "~/redux/reducers/categoriesSlice";
+import { setId } from "~/redux/reducers/publisherSlice";
 
 type detailsProps = {
   categories: categoryType[],
@@ -26,7 +27,8 @@ export default function DetailsAccordion({ categories, tags, images, blogId } : 
     dispatch(setInitialImages(images));
     dispatch(setAllTags(tags));
     dispatch(setAllCategories(categories));
-  });
+    dispatch(setId(blogId));
+  }, [])
 
   return (
     <Accordion type="multiple" defaultValue={['publisher']}>
@@ -34,7 +36,7 @@ export default function DetailsAccordion({ categories, tags, images, blogId } : 
       <AccordionItem value="publisher">
         <AccordionTrigger>Publish</AccordionTrigger>
         <AccordionContent>
-          <Publisher blogId={blogId}/>
+          <Publisher />
         </AccordionContent>
       </AccordionItem>
 

@@ -1,6 +1,6 @@
 import { categoryType, editorType, imagesType } from "~/types";
 
-export function saveFn({
+export function saveBlog({
   images,
   tags,
   categories,
@@ -13,6 +13,8 @@ export function saveFn({
   editor: editorType,
   blogId: string
 }) {
+
+  console.log('save function recieved: ', {images, tags, categories, editor})
   const body = {
     categoryIds: categories.map(cat => cat.id),
     imageIds: images.map(i => i.id),
@@ -31,6 +33,7 @@ export function saveFn({
     body: JSON.stringify(body),
   })
 }
+
 
 /*
 Option #1 -> Delete and re-write

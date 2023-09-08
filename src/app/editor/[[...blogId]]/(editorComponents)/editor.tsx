@@ -22,9 +22,7 @@ export default function Editor({ preloadedBlog } : { preloadedBlog: editorType }
   } = useAppSelector(state => state.editorReducer);
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(setEditorDetails(preloadedBlog))
-  }, []);
+  useEffect(() => {dispatch(setEditorDetails(preloadedBlog))}, [dispatch, preloadedBlog] );
 
   return (
     <Card className="p-1 h-full flex flex-col">

@@ -1,12 +1,15 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { publishType } from "~/types";
 
-const initialState: string | undefined = ''
+const initialState = '';
 
 const publisherSlice = createSlice({
   name: 'publisherSlice',
   initialState,
   reducers: {
-    setId: (state, action: PayloadAction<string>) => action.payload
+    setId: (state, action: PayloadAction<string>) => {
+      return action.payload
+    }
   }
 });
 

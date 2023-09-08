@@ -1,4 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { composeWithDevTools } from '@redux-devtools/extension';
 
 import categoriesSlice from './reducers/categoriesSlice';
 import editorSlice from './reducers/editorSlice';
@@ -13,7 +14,8 @@ export const store = configureStore({
     tagsReducer: tagsSlice,
     imagesReducer: imagesSlice,
     publisherReducer: publisherSlice
-  }
+  },
+  devTools: true
 });
 
 export type RootState = ReturnType<typeof store.getState>;

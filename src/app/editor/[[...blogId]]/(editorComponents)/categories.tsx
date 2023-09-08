@@ -34,9 +34,11 @@ export default function Categories() {
   }
 
   const onCategoryChangeHandler = (categoryName: string) => {
+    console.log('cat changed')
     dispatch(changeCategory(categoryName))
   }
 
+  console.log(categories)
   return (
     <div>
       <form className="flex flex-row gap-1 w-full" onSubmit={handleSubmit(onCategorySubmit, onCategorySubmitError)}>
@@ -49,7 +51,7 @@ export default function Categories() {
           <div key={category.name} className="flex items-center pb-1 last:pb-0">
             <Checkbox
               defaultChecked={category.checked}
-              onChange={() => onCategoryChangeHandler(category.name)}
+              onCheckedChange={() => onCategoryChangeHandler(category.name)}
               id={`category${index}`}
             />
             <Label htmlFor={`category${index}`} className="pl-1">{category.name}</Label>
