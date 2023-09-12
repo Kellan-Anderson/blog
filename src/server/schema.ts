@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, date, pgTable, primaryKey, serial, text, varchar } from 'drizzle-orm/pg-core'
-import generateUID from '~/lib/helpers/generateUID';
+import { boolean, date, pgTable, primaryKey, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 
 
 /* ----------------------------------------------------- Users ------------------------------------------------------ */
@@ -13,6 +12,7 @@ export const users = pgTable('users', {
 
 export const usersRelations = relations(users, ({ many }) => ({
   blogs: many(blogs),
+  comments: many(comments),
 }))
 
 /* ----------------------------------------------------- blogs ------------------------------------------------------ */
@@ -33,7 +33,8 @@ export const blogRelations = relations(blogs, ({ one, many }) => ({
   owner: one(users),
   blogsAndCategories: many(blogsAndCategories),
   tags: many(tags),
-  imagesAndBlogs: many(blogsAndImages)
+  imagesAndBlogs: many(blogsAndImages),
+  comments: many(comments)
 }))
 
 /* --------------------------------------------------- Categories --------------------------------------------------- */
@@ -115,3 +116,25 @@ export const blogsAndImagesRelations = relations(blogsAndImages, ({ one }) => ({
     references: [images.id]
   })
 }));
+
+/* ---------------------------------------------------- Comments ---------------------------------------------------- */
+
+export const comments = pgTable('comments', {
+  id: text('id').primaryKey(),
+  comment: text('comment').notNull(),
+  ownerId: text('owner_id').notNull().references(() => users.id),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  blogRepliesToId: text('blog_replies_to_blog_id').notNull().references(() => blogs.id),
+  commentRepliesToId: text('comment_replies_to_id')
+});
+
+export const commentRelation = relations(comments, ({ one }) => ({
+  blogs: one(blogs, {
+    fields: [comments.blogRepliesToId],
+    references: [blogs.id]
+  }),
+  users: one(users, {
+    fields: [comments.ownerId],
+    references: [users.id]
+  })
+}))

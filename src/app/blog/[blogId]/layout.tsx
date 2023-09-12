@@ -5,11 +5,11 @@ export default function BlogPostLayout(props: {
   comments: React.ReactNode
 }) {
   return (
-    <div className="grid grid-cols-7 w-full">
-      <div className="col-span-5 flex flex-col mx-6 pl-2">
+    <div className="w-full bg-slate-700 text-white">
+      <div className="flex flex-col mx-6 pl-2 h-screen">
         {props.post}
         {props.comments}
       </div>
     </div>
   );
-}
+}7

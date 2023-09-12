@@ -22,3 +22,11 @@ export type publishType = {
   id: string,
   autosave: boolean
 }
+
+export type comment = {
+  id: string,
+  ownerName: string,
+  createdAt: Date,
+  comment: string,
+  replies: comment[]
+}
