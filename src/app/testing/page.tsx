@@ -1,7 +1,8 @@
 import convertComments from "~/lib/helpers/convertComments";
-import { comment } from "~/types";
+import Comment from "./testComment";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime"
+import { RedirectToSignIn, SignOutButton } from "@clerk/nextjs";
 dayjs.extend(relativeTime);
 
 export default function TestPage() {
@@ -80,31 +81,11 @@ export default function TestPage() {
 
   const convertedComments = convertComments(testComments);
 
-  return (
-    <div className="flex flex-col gap-5">
-      {convertedComments.map(comment => <Comment {...comment} key={comment.id} />)}
-    </div>
-  );
-}
-
-function Comment(props: comment) {
+  //TODO change the blogID value passed in after testing
   return (
     <div className="">
-      <div className="font-semibold text-xs flex flex-row items-center gap-1">
-        <p>{props.ownerName}</p>
-        <div className="h-1 w-1 bg-gray-200 rounded-full"></div>
-        <p>{dayjs(props.createdAt).fromNow()}</p>
-      </div>
-      <div className="ml-2 text-sm pb-1">
-        {props.comment}
-      </div>
-      <div className="pl-3">
-        {props.replies.map(comment => (
-          <div key={comment.id} className="pt-2 pl-1 border-l-2">
-            <Comment {...comment} />
-          </div>
-        ))}
-      </div>
+      {convertedComments.map(comment => <Comment {...comment} blogId='d_blog1' key={comment.id} />)}
+      <SignOutButton />
     </div>
   );
 }

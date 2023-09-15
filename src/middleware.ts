@@ -10,7 +10,8 @@ export default authMiddleware({
     '/blog',
     '/api/users',
     '/api/images',
-    '/api/blog'
+    '/api/blog',
+    '/testing'
   ]
 });
 

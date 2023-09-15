@@ -1,4 +1,4 @@
-import { comment } from "~/types";
+import { comment } from "~/types"
 
 export default function convertComments(comments: {
   id: string,
@@ -41,7 +41,7 @@ function convertToCommentType(comment: {
   }
 }): comment {
   return {
-    comment: comment.comment,
+    commentText: comment.comment,
     createdAt: comment.createdAt,
     id: comment.id,
     ownerName: comment.users.name ?? 'Anonymous',
@@ -49,7 +49,7 @@ function convertToCommentType(comment: {
   }
 }
 
-function findCommentWithDFS(id: string, commentList: comment[]) {
+export function findCommentWithDFS(id: string, commentList: comment[]) {
   const search = (comment: comment): (comment | null) => {
     if(comment.id === id) {
       return comment

@@ -1,9 +1,10 @@
 import { eq } from "drizzle-orm";
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import { db } from "~/server/db";
-import { blogs } from "~/server/schema";
+import { blogs, users } from "~/server/schema";
 import { Separator } from "~/components/ui/separator"
 import dayjs from "dayjs";
+import { Dot } from "~/components/ui/dot";
 
 export default async function BlogPost({ params }: { params: { blogId: string } }) {
 
@@ -19,35 +20,41 @@ export default async function BlogPost({ params }: { params: { blogId: string } 
       lastUpdated: true,
       title: true,
     },
+    with: {
+      owner: {
+        columns: {
+          name: true
+        }
+      }
+    }
   });
 
   if(!blogPost) return <div className="h-screen w-full">Blog post not found</div>;
 
   const { title, description, content, createdAt, lastUpdated } = blogPost;
+  const author = blogPost.owner?.name ?? "Anonymous";
 
   return (
     <>
-      <section className="border border-black flex flex-col gap-2">
-        <div id='title' className="w-full flex justify-start mt-4">
-          <h1 className="text-6xl font-semibold">
-            {title}
-          </h1>
-        </div>
-        <div className="pl-2">
-          <div id='description'>
-            <p className="text-sm text-gray-500">{description}</p>
-          </div>
-          <div id='meta' className="flex flex-row gap-2 text-sm text-gray-500">
-            <h2>Created at: {dayjs(createdAt).format('ddd, MMM D, YYYY h:mm')}</h2>
-            <Separator orientation="vertical" className="w-[2px] rounded-full"/>
-            <h2>Last updated: {dayjs(lastUpdated).format('ddd, MMM D, YYYY h:mm')}</h2>
-          </div>
+      <section id='blog-header' className="fixed right-6 left-6 pt-10 flex flex-col justify-center items-center z-10">
+        <h1 id="title" className="text-6xl font-bold">
+          {title}
+        </h1>
+        <p className="pt-1">{description}</p>
+        <div className="flex flex-row items-center gap-2 text-sm text-slate-400">
+          <p>By: {author}</p>
+          <Dot />
+          <p>Created at: {dayjs(createdAt).format('MMM DD, YYYY')}</p>
+          <Dot />
+          <p>Updated at: {dayjs(lastUpdated).format('MMM DD, YYYY')}</p>
         </div>
       </section>
-      <article className="pt-4">
-        <ReactMarkdown className="markdown text-stone-900 pl-2">
-          {content ? content : 'Blog has no content'}
-        </ReactMarkdown>
+      <article className="mt-40 z-20 border border-black rounded-t-3xl bg-slate-100 dark:bg-zinc-800">
+        <div className="p-9">
+          <ReactMarkdown className="markdown">
+            {content ?? 'No blog'}
+          </ReactMarkdown>
+        </div>
       </article>
     </>
   );

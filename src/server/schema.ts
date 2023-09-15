@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { boolean, date, pgTable, primaryKey, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { createInsertSchema } from 'drizzle-zod';
 
 
 /* ----------------------------------------------------- Users ------------------------------------------------------ */
@@ -30,7 +31,10 @@ export const blogs = pgTable('blog', {
 });
 
 export const blogRelations = relations(blogs, ({ one, many }) => ({
-  owner: one(users),
+  owner: one(users, {
+    fields: [blogs.ownerId],
+    references: [users.id]
+  }),
   blogsAndCategories: many(blogsAndCategories),
   tags: many(tags),
   imagesAndBlogs: many(blogsAndImages),
@@ -137,4 +141,6 @@ export const commentRelation = relations(comments, ({ one }) => ({
     fields: [comments.ownerId],
     references: [users.id]
   })
-}))
+}));
+
+export const insertCommentSchema = createInsertSchema(comments);

@@ -35,7 +35,7 @@ export default function generateUID(idType:
 
   var uid = '';
   for(var i = 0; i < length; i++) {
-    const randChar = Math.random()
+    const randChar = (Math.floor(Math.random() * key.length))
     uid += key.at(randChar);
   }
 

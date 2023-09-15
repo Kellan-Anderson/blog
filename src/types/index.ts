@@ -27,6 +27,6 @@ export type comment = {
   id: string,
   ownerName: string,
   createdAt: Date,
-  comment: string,
+  commentText: string,
   replies: comment[]
 }
