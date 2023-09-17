@@ -64,6 +64,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({message: 'Saved blog'}, { status: 200 });
   } catch (err) {
+    console.log("Error: ", err)
     return NextResponse.json({message: `There was an error saving the blog. Message: ${err}`}, { status: 500 });
   }
 }

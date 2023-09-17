@@ -10,6 +10,8 @@ export default async function BlogPost({ params }: { params: { blogId: string } 
 
   const blogId = params.blogId;
 
+  console.log(blogId)
+
   const blogPost = await db.query.blogs.findFirst({
     where: eq(blogs.id, blogId),
     columns: {

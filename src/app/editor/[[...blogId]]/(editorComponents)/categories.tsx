@@ -34,11 +34,9 @@ export default function Categories() {
   }
 
   const onCategoryChangeHandler = (categoryName: string) => {
-    console.log('cat changed')
     dispatch(changeCategory(categoryName))
   }
 
-  console.log(categories)
   return (
     <div>
       <form className="flex flex-row gap-1 w-full" onSubmit={handleSubmit(onCategorySubmit, onCategorySubmitError)}>

@@ -54,7 +54,6 @@ export default function Publisher() {
   }, [autosave]);
 
   useEffect(() => {
-    console.log({images, categories, tags, editor, blogId, hasChanged: hasChanged.current})
     if(blogId.length) {
       hasChanged.current = true;
       details.current = { images, categories, tags, blogId, editor }

@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, date, pgTable, primaryKey, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
+import { boolean, pgTable, primaryKey, serial, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod';
 
 
@@ -24,10 +24,10 @@ export const blogs = pgTable('blog', {
   title: text('title').notNull(),
   description: text('description').notNull(),
   content: text('content').default(''),
-  createdAt: date('created_at').notNull(),
-  lastUpdated: date('last_updated').defaultNow(),
+  createdAt: timestamp('created_at').notNull(),
+  lastUpdated: timestamp('last_updated').defaultNow(),
   pinned: boolean('pinned'),
-  pinnedAt: date('pinned_at')
+  pinnedAt: timestamp('pinned_at')
 });
 
 export const blogRelations = relations(blogs, ({ one, many }) => ({
@@ -94,7 +94,7 @@ export const images = pgTable('images', {
   imageName: varchar('image_name', { length: 48 }),
   imageUrl: text('image_url').notNull(),
   ownedBy: text('owned_by').references(() => users.id),
-  createdAt: date('create_at').defaultNow()
+  createdAt: timestamp('create_at').defaultNow()
 });
 
 export const imagesRelations = relations(images, ({ one, many }) => ({

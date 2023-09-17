@@ -109,7 +109,7 @@ function AddImageDialog() {
       toast({title: 'Success', description: 'Your image was uploaded'});
     },
     onError: (err) => {
-      console.log(err)
+      console.log('Error: ', err)
       toast({
         title: 'Upload Failed',
         description: 'There as an issue uploading your image, please try again', 
@@ -124,7 +124,7 @@ function AddImageDialog() {
     if(!file) return
     const verification = validateImage(file);
     if(!verification.verified) {
-      console.log('image not verified: ', verification.messages)
+      console.log('Image not verified: ', verification.messages)
       setErrorMessages(verification.messages);
     } else {
       setErrorMessages([]);

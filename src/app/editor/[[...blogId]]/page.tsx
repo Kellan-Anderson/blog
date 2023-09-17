@@ -31,11 +31,20 @@ export default async function EditorPage({ searchParams } : {
   if(!allowedToPost) throw new UserNotAllowedToPostError('You are not allowed to create blog posts');
 
   // Get the blog post id from the search params
-  let blogId = searchParams['blogId']?.at(0) ?? generateUID('draft');
+  let blogId = searchParams['blogId'];
+  if(blogId === undefined) {
+    blogId = generateUID('draft');
+    await db.insert(blogs).values({
+      createdAt: new Date(),
+      description: '',
+      id: blogId,
+      ownerId: user.id,
+      title: '',
+    })
+  } else {
+    blogId = String(blogId);
+  }
 
-  // todo change the way that blogId is generated
-  blogId = 'd_blog1'
-  
   // Load the blog data from the DB 
   const blogPost = await db.query.blogs.findFirst({
     where: eq(blogs.id, blogId),
@@ -67,8 +76,6 @@ export default async function EditorPage({ searchParams } : {
       with: { images: true }
     }),
   ]);
-
-  console.log(blogCategories);
 
   // Map categories to the category type
   const mappedCategories = blogCategories.map(cat => ({
