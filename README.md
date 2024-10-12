@@ -35,3 +35,13 @@ Some of the things I want to talk about in my blog posts will include code snipp
 ## Testing
 
 I want to use test-driven development (TDD) for this project, following the red-green-refactor method. Testing is something that I do not have a lot of experience with when coding my own applications, so I expect this process to be challenging at first. I know I want to write at least one test for each feature, but I do not know what the given extent is for this.
+
+## Todo list
+1. [x] Remove bootstrapped content
+2. [x] Edit database schema
+3. [ ] Make create blog script
+4. [ ] Render mdx content on the screen
+5. [ ] List all blog posts on home page
+6. [ ] Add filtering, sorting, and searching to home page
+7. [ ] Add user sign in for leaving comments
+8. [ ] Add blog comments 
