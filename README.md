@@ -1,29 +1,37 @@
-# Create T3 App
+# Kellan Anderson's Blog Project
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Requirements and thought process behind blogging for the first time
 
-## What's next? How do I make an app with this?
+## Why make a blog?
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+I want to make a blog to give myself a platform to share my ideas, what I'm building, and what I'm learning about. Most importantly, I want to use the platform to share my faith and to help others learn about & know Jesus.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+I also think a blog would be a fun project 😁
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Blog Requirements
 
-## Learn More
+- Needs to be fully tested.
+- Should allow me to write blog posts using mdx.
+- Should allow users to have the option to comment on my blog posts.
+- Users should be able to search, sort, and filter blog posts on the home page.
+- There should be scripts to create, delete, and update blog posts.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## How I'm going to build it
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+For writing the blog posts I want to use a react mdx library to take mdx content that exists on the server and transform that into html. I want to use Next.js for this project so that I can take advantage of the frameworks server components, routing system, and build time caching.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Each blog post is going to have several pieces of metadata which include: title, sub title, author, published date, last updated date, tags, whether the blog is published, and id. I want to put the metadata at the top of each blog post and access it using a package called gray-matter. Gray-matter parses the top-level data in a file and when coupled with a validation library like zod, it provides a type safe way to interact with the file contents.
 
-## How do I deploy this?
+In addition to placing the metadata for a blog post at the top of a file, I want to sync it to an external database as well. This will allow me to have some extra functionality surrounding searching and filtering blog posts.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+Each blog post will have a unique id similar to a sequence number. The numbering system will be zero-indexed, meaning the title of the first blog post will look something like *#0: Hello World*. This will be reflected in the post url as well, so when following the example above the url would look like */posts/#0-hello-world*.
+
+To help me to keep track of all the metadata, sequencing, and published status, I want to use custom scripts. There will be scripts for creating blog posts, syncing any changed metadata, deleting posts, and publishing/unpublishing posts.
+
+Deleting blog posts pose a unique challenge due to blog sequencing. If there are three blog posts having the id sequence of 0-2, and I delete the post having the id of 1, the following blog posts would be out of order. To overcome this, there will be a status for a deleted post that tells the user that the post has been deleted.
+
+Some of the things I want to talk about in my blog posts will include code snippets, so I want to implement some version of syntax highlighting. I am still unfamiliar to how to implement this.
+
+## Testing
+
+I want to use test-driven development (TDD) for this project, following the red-green-refactor method. Testing is something that I do not have a lot of experience with when coding my own applications, so I expect this process to be challenging at first. I know I want to write at least one test for each feature, but I do not know what the given extent is for this.
