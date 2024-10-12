@@ -2,6 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   index,
   integer,
+  pgEnum,
   pgTableCreator,
   primaryKey,
   serial,
@@ -19,26 +20,49 @@ import { type AdapterAccount } from "next-auth/adapters";
  */
 export const createTable = pgTableCreator((name) => `blog_${name}`);
 
-export const posts = createTable(
-  "post",
-  {
-    id: serial("id").primaryKey(),
-    name: varchar("name", { length: 256 }),
-    createdById: varchar("created_by", { length: 255 })
-      .notNull()
-      .references(() => users.id),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
-      () => new Date()
-    ),
-  },
-  (example) => ({
-    createdByIdIdx: index("created_by_idx").on(example.createdById),
-    nameIndex: index("name_idx").on(example.name),
+export const blogStatus = pgEnum('blog_status', ['published', 'unpublished', 'deleted']);
+
+export const blogs = createTable('blogs', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  sequenceNumber: serial('sequence_number'),
+  title: text('title').notNull(),
+  subTitle: text('sub_title'),
+  // author: varchar('author', { length: 255 }).notNull().references(() => users.id), // TODO Add at a later date
+  publishedDate: timestamp('published_date'),
+  lastUpdated: timestamp('last_updated'),
+  publishedStatus: blogStatus('published_status').notNull().default('unpublished'),
+});
+
+export const blogRelations = relations(blogs, ({ many }) => ({
+  tags: many(blogsAndTags)
+}))
+
+export const tags = createTable('tags', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  tagName: text('tag_name').notNull()
+});
+
+export const tagsRelations = relations(tags, ({ many }) => ({
+  blogs: many(blogsAndTags)
+}))
+
+export const blogsAndTags = createTable('blogs_and_tags', { 
+  blogId: varchar('blog_id', { length: 255 }),
+  tagId: varchar('tag_id', { length: 255 })
+}, (t) => ({
+  pk: primaryKey({ columns: [t.blogId, t.tagId] })
+}));
+
+export const blogsAndTagsRelations = relations(blogsAndTags, ({ one }) => ({
+  tag: one(tags, {
+    fields: [blogsAndTags.tagId],
+    references: [tags.id]
+  }),
+  blog: one(blogs, {
+    fields: [blogsAndTags.blogId],
+    references: [blogs.id]
   })
-);
+}))
 
 export const users = createTable("user", {
   id: varchar("id", { length: 255 })
